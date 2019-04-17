@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '../views/Home'
 import Chat from '../views/Chat'
+import Group from '../views/Group'
 import Message from '../views/Message'
 import Me from '../views/Me'
 import UserInfo from '../views/UserInfo'
@@ -26,6 +27,12 @@ const router = new Router({
       path: '/chat/:id/:name',
       name: 'chat',
       component: Chat,
+      meta: { hiddenNav: true }
+    },
+    {
+      path: '/group',
+      name: 'group',
+      component: Group,
       meta: { hiddenNav: true }
     },
     {

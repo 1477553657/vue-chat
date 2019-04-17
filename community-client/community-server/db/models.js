@@ -35,3 +35,14 @@ const chatSchema = mongoose.Schema({
 //定义和暴露聊天 Model
 const ChatModel = mongoose.model('chat',chatSchema);
 exports.ChatModel = ChatModel;
+
+//创建群聊 Schema
+const allChatSchema = mongoose.Schema({
+    userid: {type: String,require: true}, //发送者id
+    username: {type: String,require: true}, //发送者姓名
+    content: { type: String, required: true }, // 当前发送者聊天内容
+    read: { type: Boolean, default: false }, // 标识是否已读
+    create_time: { type: Number }, // 创建时间
+})
+const AllChatModel = mongoose.model('allchat',allChatSchema);
+exports.AllChatModel = AllChatModel;

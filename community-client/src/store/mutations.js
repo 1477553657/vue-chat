@@ -1,5 +1,5 @@
 import {
-    AUTHENTICATED,USER,MSGLIST,ONEMESSAGE,RECEIVEMSGLIST, READMSG,USERINFO,AVATAR
+    AUTHENTICATED,USER,MSGLIST,ONEMESSAGE,RECEIVEMSGLIST, READMSG,USERINFO,AVATAR, ALLMESSAGE,GROUPCHAT
 } from './mutation-types.js'
 
 export default {
@@ -48,5 +48,12 @@ export default {
     },
     [AVATAR] (state,{avatar}) {
         state.user.avatar = avatar
+    },
+    //群聊消息
+    [ALLMESSAGE](state,chatMsg) {
+        state.groupChat = [...state.groupChat,chatMsg]
+    },
+    [GROUPCHAT](state,result) {
+        state.groupChat = result
     }
 }

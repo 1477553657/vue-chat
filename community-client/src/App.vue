@@ -30,6 +30,8 @@ export default {
       this.$store.dispatch("setUser", decoded);
       //请求用户聊天信息
       this.$store.dispatch("reqMsgList",this.user.id)
+      //请求群聊信息 保存到vuex
+      this.$store.dispatch("reqGroupChat")
   }
   },
   mounted () {

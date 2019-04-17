@@ -1,7 +1,7 @@
 import {
-    AUTHENTICATED,USER,MSGLIST,ONEMESSAGE,RECEIVEMSGLIST,READMSG,USERINFO,AVATAR
+    AUTHENTICATED,USER,MSGLIST,ONEMESSAGE,RECEIVEMSGLIST,READMSG,USERINFO,AVATAR,ALLMESSAGE,GROUPCHAT
 } from './mutation-types';
-import {reqMsgList,reqReadMsg,reqUserInfo} from '../api/index'
+import {reqMsgList,reqReadMsg,reqUserInfo,reqGroup} from '../api/index'
 
 import io from 'socket.io-client';
 
@@ -22,6 +22,11 @@ function initIO(userId) {
                 store.dispatch("receiveOneMsg",{chatMsg,userId})
             }
         })
+        //监听群聊消息
+        io.socket.on('message',(chatMsg) => {
+            console.log("收到群聊消息",chatMsg)
+            store.dispatch("receiveAll",chatMsg)
+        })
     }
 }
 
@@ -38,10 +43,30 @@ export default {
         commit(AUTHENTICATED, false)
         commit(USER, null)
     },
+    //私聊的发送消息
     sendMsg: ({commit},chatMsg) => {
         initIO()
         //将消息发送给服务器
         io.socket.emit("clientToServer",chatMsg)
+    },
+    //群聊的发送消息
+    groupMsg: ({commit},chatMsg) => {
+        initIO()
+        //将群聊消息发给服务器
+        io.socket.emit("groupChat",chatMsg)
+    },
+    //群聊的收到信息
+    receiveAll: ({commit},chatMsg) => {
+        initIO()
+        //群聊消息保存到vuex
+        commit(ALLMESSAGE,chatMsg)
+    },
+    //异步请求群聊信息 
+    async reqGroupChat({commit}) {
+        const result = await reqGroup()
+        if(result.data.code === 200) {
+            commit(GROUPCHAT,result.data.message)
+        }
     },
     //异步请求当前用户聊天消息和所有用户部分信息
     async reqMsgList({commit},userId) {

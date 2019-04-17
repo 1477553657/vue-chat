@@ -1,28 +1,24 @@
 <template>
-  <div class="chat">
+  <div class="group">
     <!-- 头部 -->
     <div class="title">
       <mu-appbar style="width: 100%;" color="primary">
         <mu-button icon slot="left" @click="back">
           <i class="iconfont icon-fanhui" style="font-size: 0.5rem;"></i>
-        </mu-button>{{this.$route.params.name}}
-        <mu-button flat slot="right" @click="openSimpleDialog">
-          <i class="iconfont icon-renzhuanhuan" style="font-size: 0.6rem;"></i>
-        </mu-button>
+        </mu-button>师生群聊
       </mu-appbar>
     </div>
 
     <!-- 聊天内容部分 -->
     <div class="chat-container" ref="chatContent">
       <div class="container">
-        <div class="item" v-for="(item,index) in msg" :key="index">
-          <div :class="item.from === user.id ? 'right' : 'left' ">
-            <div class="time">{{item.create_time}} </div>
+        <div class="item" v-for="(item,index) in groupChat" :key="index">
+          <div :class="item.userid === user.id ? 'right' : 'left' ">
+            <div class="time">{{item.username}} </div>
             <div class="chat-msg">{{item.content}}</div>
-            <!-- <div class="avatar"></div> -->
+            <div class="avatar"></div>
             <mu-avatar>
-              <img v-show="item.from === user.id" :src="user.avatar">
-              <img v-show="item.from !== user.id" :src="otheruser.avatar">
+              <img :src="users[item.userid].avatar">
             </mu-avatar>
           </div>
         </div>
@@ -45,58 +41,35 @@
     <div ref="emoji">
       <emoji :getEmoji="getEmoji" ref="emoji" @sendEmoji="sendEmoji"/>
     </div>
-
-    <!-- 弹出信息栏部分 -->
-    <mu-dialog width="360" :open.sync="openSimple">
-      <div><span style="font-weight: 600;">昵称:</span> {{otheruser.username}}</div>
-      <div><span style="font-weight: 600;">来自:</span> {{otheruser.school}}</div>
-      <div><span style="font-weight: 600;">年龄:</span> {{otheruser.age}}</div>
-      <div><span style="font-weight: 600;">信息:</span> {{otheruser.info}}</div>
-  </mu-dialog>
   </div>
 </template>
 
 <script>
-import moment from "moment";
 import emoji from "../components/Emoji";
 export default {
   name: "",
   components: {
     emoji
   },
-  computed: {
-      //当前用户
-    user() {
-      return this.$store.getters.user;
-    },
-    //这是过滤掉消息得到双方的消息
-    msg() {
-         //计算当前聊天的chat_id 只属于当前两个人的 from to（sort再拼接）
-      const meId = this.user.id; //当前用户
-      const targetId = this.$route.params.id; //对方
-      const chatId = [meId,targetId].sort().join('_'); //合并
-      //在消息列表中找出这个合并的，就是双方两个人的消息
-      const msg = this.$store.state.chatMsg.filter(msg => msg.chat_id === chatId);
-      //格式化时间;
-      msg.forEach(item => {
-          item.create_time = moment(item.create_time).format("YYYY-MM-DD HH:mm:ss");
-      })
-      return msg;
-    },
-    //对方信息
-    otheruser() {
-        return this.$store.state.users[this.$route.params.id]
-    }
-  },
   data() {
     return {
-      chatValue: '',
-      getEmoji: false,//表情框弹出
-      openSimple: false //信息弹出框
+      msg: "",
+      getEmoji: false,
+      chatValue: "",
     };
   },
+  computed: {
+      groupChat() {
+          return this.$store.getters.groupChat
+      },
+      user() {
+          return this.$store.getters.user
+      },
+      users() {
+          return this.$store.getters.users
+      },
+  },
   methods: {
-    //返回上一页
     back() {
       this.$router.back();
     },
@@ -105,9 +78,9 @@ export default {
       this.getEmoji = !this.getEmoji;
     },
     hideEmoji(e) {
-         if (!this.$refs.emoji.contains(e.target)) {
+      if (!this.$refs.emoji.contains(e.target)) {
         this.getEmoji = false;
-         }
+      }
     },
     //点击表情框表情
     sendEmoji(e) {
@@ -118,52 +91,33 @@ export default {
       }
       e.stopPropagation();
     },
-    //发送消息
-    //这里发送才有socket连接 我们要想个办法时刻socket
-    //ps已解决: 在App.vue的reqMsgList中加入了初始化socket 使得页面一进入就可以时刻收消息了
     sendmess() {
-      if (!this.chatValue) {
+        if (!this.chatValue) {
         this.$alert("不能没有任何输入");
         return;
       }
-      //console.log({from: this.user.id,to: this.$route.params.id,content: this.chatValue})
-       this.$store.dispatch("sendMsg",{from: this.user.id,to: this.$route.params.id,content: this.chatValue});
-      this.chatValue = "";
-    },
-    openSimpleDialog() {
-      this.openSimple = true;
+       this.$store.dispatch("groupMsg",{userid: this.user.id,username: this.user.username,content: this.chatValue});
+       this.chatValue = ""
     }
   },
   mounted() {
-      //这个控制的话点击重进会报错！！但不影响功能
-      //终于知道为啥报错了，因为在document绑定后离开，没有移除document的click事件
-      //这个组件外的组件可是没有 this.$refs.emoji 的
-      document.addEventListener("click",this.hideEmoji);
-      //进来加载下消息
-      this.$store.dispatch("reqMsgList",this.user.id);
-      //进来就标记消息为已读
-      this.$store.dispatch("readMsg",{from: this.$route.params.id,to: this.user.id})
+    document.addEventListener("click", this.hideEmoji);
   },
-  beforeDestroy () {
-      //离开这个组件必须移除掉，不然其它组件会报错！
-      document.removeEventListener("click",this.hideEmoji)
-      //离开也要标记消息为已读，因为你看完了
-      this.$store.dispatch("readMsg",{from: this.$route.params.id,to: this.user.id})
+  beforeDestroy() {
+    document.removeEventListener("click", this.hideEmoji);
   },
   watch: {
-      //监听消息变化，到底部滚动
-      msg() {
-      //监听消息变化，马上滚动到底部，一定要nextTick 否则会是第二条数据
-      this.$nextTick(() => {
+      groupChat() {
+          this.$nextTick(() => {
         this.$refs.chatContent.scrollTop = 20000;
       });
-    }
+      }
   }
 };
 </script>
 
 <style lang = 'stylus' scoped>
-.chat
+.group
   width 100%
   height 100%
   /* position relative */
@@ -274,9 +228,4 @@ export default {
             border-width 0.24rem
             border-color transparent transparent #bbdefb transparent
             border-style solid
-          /* .avatar
-          img
-            width 1.2rem
-            height 1.2rem
-            border-radius 0.1rem */
 </style>

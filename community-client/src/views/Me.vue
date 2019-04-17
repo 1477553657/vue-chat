@@ -6,7 +6,7 @@
       <!-- 这里动态绑定的背景图 一定要用驼峰写法！！！！ -->
       <div class="bg bg-blur" :style="{backgroundImage: `url(${user.avatar})`}"></div>
       <div class="avatar">
-        <mu-avatar size="75">
+        <mu-avatar size="75" @click="updateAvatar">
           <img :src="avatar" alt>
         </mu-avatar>
         <div class="name">{{username}}</div>

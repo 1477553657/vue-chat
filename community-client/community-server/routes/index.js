@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const upload = require('../config/upload');
 
-const {UserModel,ChatModel} = require('../db/models');
+const {UserModel,ChatModel,AllChatModel} = require('../db/models');
 const filter = {password: 0, __v: 0} //数据库过滤信息，不返回这两个
 
 //测试
@@ -144,7 +144,16 @@ router.post('/uploadAvatar',upload.any(),passport.authenticate("jwt",{session: f
   })
 })
 
+//获取群聊聊天信息
+router.get('/groupChat',passport.authenticate('jwt',{session:false}),(req,res) => {
+//{}表示查所有 ，过滤了_id和__v
+  AllChatModel.find({},{_id: 0,__v: 0},(err,data) => {
+    if(err) console.log(err);
+    //console.log(data)
+    res.json({code: 200,message: data})
+  })
 
+})
 
 
 module.exports = router;

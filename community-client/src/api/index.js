@@ -25,3 +25,6 @@ export const reqUserInfo = () => ajax("/api/userInfo")
 
 //上传头像
 export const reqAvatar = (formData) => ajax("/api/uploadAvatar",formData,'POST')
+
+//请求群聊聊天信息
+export const reqGroup = () => ajax("/api/groupChat")
