@@ -7,7 +7,6 @@
       <div class="bg bg-blur" :style="{backgroundImage: `url(${user.avatar})`}"></div>
       <div class="avatar">
         <mu-avatar size="75">
-          <!-- <img src="http://s3.qiufengh.com/avatar/22.jpeg"> -->
           <img :src="avatar" alt>
         </mu-avatar>
         <div class="name">{{username}}</div>
