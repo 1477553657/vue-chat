@@ -5,11 +5,13 @@ export default {
     users: state => state.users,
     chatMsg: state => state.chatMsg,
     unReadCount: state => state.unReadCount,
+    unAll: state => state.unAll,
     //群聊
-    groupChat: (state) => {
-        state.groupChat.forEach(item => {
-           item.create_time = moment(item.create_time).format("YYYY-MM-DD HH:mm:ss")
-        })
-        return state.groupChat
-    }
+    // groupChat: (state) => {
+    //     state.groupChat.forEach(item => {
+    //        item.create_time = moment(item.create_time).format("YYYY-MM-DD HH:mm:ss")
+    //     })
+    //     return state.groupChat
+    // }
+    groupChat: state => state.groupChat
 }

@@ -102,6 +102,7 @@ export default {
   },
   mounted() {
     document.addEventListener("click", this.hideEmoji);
+    this.$refs.chatContent.scrollTop = 20000;
   },
   beforeDestroy() {
     document.removeEventListener("click", this.hideEmoji);

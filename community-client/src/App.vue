@@ -35,7 +35,7 @@ export default {
   }
   },
   mounted () {
-    this.$store.dispatch("reqMsgList",this.user.id);
+    //this.$store.dispatch("reqMsgList",this.user.id);
     //请求总的未读消息
       this.$store.dispatch("receiveMsgList",{chatMsg: this.chatMsg,userId: this.user.id})
   },

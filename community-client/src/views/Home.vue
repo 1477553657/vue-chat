@@ -2,8 +2,22 @@
   <div class="home">
     <mu-paper class="demo-list-wrap">
       <mu-appbar color="#ff4081">{{user.type==="student"?"老师列表":"学生列表"}}</mu-appbar>
+      <mu-list @click="goGroup">
+        <mu-list-item avatar button :ripple="false">
+      <mu-list-item-action>
+        <mu-avatar>
+          <img src="../assets/images/avatar.jpg">
+        </mu-avatar>
+      </mu-list-item-action>
+      <mu-list-item-title>师生群聊室</mu-list-item-title>
+      <mu-list-item-action>
+        <mu-badge :content="String(unAll)" color="secondary" :circle="true"></mu-badge>
+      </mu-list-item-action>
+    </mu-list-item>
+      </mu-list>
+      <mu-divider></mu-divider>
       <mu-list>
-        <!-- <mu-sub-header>Hello</mu-sub-header> -->
+        <mu-sub-header>{{user.type==="student"?"老师":"学生"}}</mu-sub-header>
         <mu-list-item
           avatar
           button
@@ -42,6 +56,9 @@ export default {
   computed: {
     user() {
       return this.$store.getters.user;
+    },
+    unAll() {
+      return this.$store.getters.unAll;
     }
   },
   methods: {
@@ -61,6 +78,9 @@ export default {
           name
         }
       });
+    },
+    goGroup() {
+      this.$router.push({name: "group"})
     }
   },
   mounted() {

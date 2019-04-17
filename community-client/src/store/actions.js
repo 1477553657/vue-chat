@@ -24,7 +24,7 @@ function initIO(userId) {
         })
         //监听群聊消息
         io.socket.on('message',(chatMsg) => {
-            console.log("收到群聊消息",chatMsg)
+            //console.log("收到群聊消息",chatMsg)
             store.dispatch("receiveAll",chatMsg)
         })
     }

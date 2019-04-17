@@ -4,7 +4,7 @@
       <mu-appbar color="#ff4081">消息列表</mu-appbar>
       <mu-list>
         <!-- 这是进入该用户发送给其他用户的路由 其他用户是to 再从users找到名字 -->
-        <mu-list-item avatar button v-for="item in aLastMsgs" :key="item.id" @click="goChat(item)">
+        <mu-list-item avatar button v-for="item in aLastMsgs" :key="item._id" @click="goChat(item)">
           <mu-list-item-action>
             <mu-avatar>
               <img v-show="item.to === user.id" :src="users[item.from].avatar">
@@ -42,7 +42,7 @@ export default {
         return this.$store.getters.users;
     },
     chatMsg() {
-      return this.$store.getters.chatMsgs;
+      return this.$store.getters.chatMsg;
     },
     aLastMsgs() {
         return this.getLastMsgs(this.$store.state.chatMsg,this.user.id)

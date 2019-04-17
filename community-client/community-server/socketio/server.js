@@ -23,13 +23,13 @@ module.exports = (server) => {
         //收到客户端发来的消息，群聊
         socket.on('groupChat',chat => {
             const create_time = Date.now();
-            const {userid,username,avatar,content} = chat;
+            const {userid,username,content} = chat;
             //保存到数据库 不能插_id 重复会报错 唯一性
             //别把头像存入群聊数据库，用户头像会变得，vuex的user就可以找到头像了
             new AllChatModel({userid,username,content,create_time}).save((err,data) => {
                 if(err) console.log(err);
                 //发送给所有客户端
-                const result = {userid,username,content,create_time}
+                const result = {userid,username,content,create_time,read: data.read}
                 io.emit("message",result)
             })
         })

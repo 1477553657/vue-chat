@@ -51,9 +51,13 @@ export default {
     },
     //群聊消息
     [ALLMESSAGE](state,chatMsg) {
+        // console.log(chatMsg)
+        if(chatMsg.read === false) state.unAll += 1;
         state.groupChat = [...state.groupChat,chatMsg]
     },
     [GROUPCHAT](state,result) {
         state.groupChat = result
+        //console.log(result)
+        state.unAll  =result.reduce((pre,msg) => pre + (!msg.read ? 1 : 0),0)
     }
 }
