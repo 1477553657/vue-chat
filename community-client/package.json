@@ -1,0 +1,44 @@
+{
+  "name": "community-client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "animate.css": "^3.7.0",
+    "axios": "^0.18.0",
+    "core-js": "^2.6.5",
+    "fastclick": "^1.0.6",
+    "jwt-decode": "^2.2.0",
+    "moment": "^2.24.0",
+    "muse-ui": "^3.0.2",
+    "muse-ui-loading": "^0.2.0",
+    "muse-ui-message": "^0.2.1",
+    "muse-ui-toast": "^0.3.0",
+    "qs": "^6.7.0",
+    "socket.io-client": "^2.2.0",
+    "vue": "^2.6.6",
+    "vue-cropper": "^0.4.9",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.5.0",
+    "@vue/cli-service": "^3.5.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "vue-template-compiler": "^2.5.21"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}
